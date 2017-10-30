@@ -31,7 +31,7 @@ The SS dataset contains various samples from outdoor and indoor parking lots. In
 
 ![samples](ss_dataset_example/avm_image_samples.png)
 
-
+​                                                       (a) outdoor-day, (b) outdoor-rainy, (c) indoor
 
 ## Description of *PS*(Parking Space) dataset
 
