@@ -4,3 +4,4 @@ dataset/AVM6414-20171113T232622Z-001.zip
 *.pyc
 code/model-pool5_20171012-20000/
 utils/.ipynb_checkpoints/
+code/models/
