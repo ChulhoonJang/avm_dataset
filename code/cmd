@@ -1,0 +1,1 @@
+python evaluate.py --model-dir=./models/model-171115 --eval-file=/media/srg/Work/git/avm_dataset/dataset/AVM6414_augmented/test.txt --eval-dir=/media/srg/Work/git/avm_dataset/dataset/AVM6414_augmented

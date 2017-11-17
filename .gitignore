@@ -1,3 +1,11 @@
 dataset/AVM6414_augmented
 dataset/AVM6414
 code/models/
+
+*.pyc
+
+augmentation/\.ipynb_checkpoints/
+
+dataset/\.ipynb_checkpoints/
+
+code/weights/
