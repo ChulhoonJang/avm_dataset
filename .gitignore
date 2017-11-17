@@ -1,7 +1,3 @@
-dataset/AVM6414
 dataset/AVM6414_augmented
-dataset/AVM6414-20171113T232622Z-001.zip
-*.pyc
-code/model-pool5_20171012-20000/
-utils/.ipynb_checkpoints/
+dataset/AVM6414
 code/models/
