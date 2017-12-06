@@ -13,14 +13,14 @@ def findCrossPoint(L1, L2):
     y = -(L1[0] * L2[1] - L2[0] * L1[1]) / (L2[0] - L1[0])    
     return (x, y)
 
-def generateRadonLines(radon_prj, ang, thresh, dist, center, img_size, debug = False ):
-    prj = radon_prj[:, ang].reshape(radon_prj.shape[0],)
+def generateRadonLines(radon_prj, theta, ang_idx, thresh, dist, center, img_size, debug = False ):
+    prj = radon_prj[:, ang_idx].reshape(radon_prj.shape[0],)
     indexes = peakutils.indexes(prj, thres=thresh, min_dist=dist)
     
     radon_lines = []
     for idx in indexes:
         l = radon_line()
-        l.generate(idx, ang, center, img_size)
+        l.generate(idx, theta[ang_idx], center, img_size)
         radon_lines.append(l)
     
     if debug == True:

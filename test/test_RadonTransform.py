@@ -10,29 +10,43 @@ from radon_transform import generateRadonLines, findCrossPoint
 
 import time
 #root = 'C:/Users/chulh/문서/Git/avm_dataset/test/'
-set_num = 7
+set_num = 8
 root = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171121/ss/set{}/labeled/class_1'.format(set_num)
 output_dir = 'C:/Users/chulh/Documents/hyu_171121/set{}/'.format(set_num)
 if os.path.isdir(output_dir) == False:
     os.mkdir(output_dir)
 
 f0 = 0
-f1 = f0 + 1
+f1 = 541
+
+ang_init = 90
+ang_margin = 10
+ang_center = ang_init 
 
 for i in tqdm(range(f0,f1)):        
     img_file = os.path.join(root, '{:08d}.jpg'.format(i))
     img = imread(img_file, as_grey=True)
-    img = cv2.resize(img, None, fx=0.2, fy=0.2)
+    img = cv2.resize(img, None, fx=0.25, fy=0.25)
     
     start_time = time.time()
     # rdaon transform
-    prj_t = radon(img)
+    theta = []    
+    for ang in range(ang_center-ang_margin, ang_center+ang_margin+1):
+        if ang >= 180:
+            ang = ang - 180
+        elif ang < 0:
+            ang = ang + 180
+        theta.append(ang)
+        
+    prj_t = radon(img, theta=theta)
     
     center = prj_t.shape[0] // 2
-    offset, ang_ps1 = np.unravel_index(prj_t.argmax(), prj_t.shape) # ang_ps1: radon image domain    
-    
+    offset, ang_idx = np.unravel_index(prj_t.argmax(), prj_t.shape) # ang_ps1: radon image domain        
+    ang_ps1 = theta[ang_idx]
+        
     # line generation for principle angle 1
-    lines_ps1 = generateRadonLines(prj_t, ang_ps1, 0.2, 10, center, (img.shape[1], img.shape[0]))    
+    lines_ps1 = generateRadonLines(prj_t, theta, ang_idx, 0.2, 10, center, (img.shape[1], img.shape[0]))
+    
     # line generation for principle angle 2
     ang_ps2 = 0
     if ang_ps1 < 90:
@@ -42,7 +56,9 @@ for i in tqdm(range(f0,f1)):
     elif ang_ps1 == 90:
         ang_ps2 = 0
         
-    lines_ps2 = generateRadonLines(prj_t, ang_ps2, 0.2, 10, center, (img.shape[1], img.shape[0]))
+    theta = [ang_ps2]
+    prj_t = radon(img, theta=theta)    
+    lines_ps2 = generateRadonLines(prj_t, theta, 0, 0.2, 10, center, (img.shape[1], img.shape[0]))
     
     # cross point
     pts = []
@@ -52,6 +68,10 @@ for i in tqdm(range(f0,f1)):
             pts.append((x,y))
     print('execution time: {} ms'.format((time.time()-start_time)*1000))
        
+    # ang center update
+    ang_center = ang_ps1
+    print(ang_center)
+
     # draw
     img_debug = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     
