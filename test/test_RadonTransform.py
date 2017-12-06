@@ -5,33 +5,34 @@ from tqdm import tqdm
 
 import matplotlib.pyplot as plt
 from skimage.io import imread
-from skimage.transform import radon, iradon
+from skimage.transform import radon
 from radon_transform import generateRadonLines, findCrossPoint
 
-
-                            
+import time
 #root = 'C:/Users/chulh/문서/Git/avm_dataset/test/'
-root = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171025/rectified/set1/output/labeled/class_1'
-output_dir = 'C:/Users/chulh/Documents/output'
+set_num = 7
+root = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171121/ss/set{}/labeled/class_1'.format(set_num)
+output_dir = 'C:/Users/chulh/Documents/hyu_171121/set{}/'.format(set_num)
+if os.path.isdir(output_dir) == False:
+    os.mkdir(output_dir)
 
-f0 = 146
-f1 = 1300
+f0 = 0
+f1 = f0 + 1
 
-log_ang = []
 for i in tqdm(range(f0,f1)):        
     img_file = os.path.join(root, '{:08d}.jpg'.format(i))
     img = imread(img_file, as_grey=True)
-    img = cv2.resize(img, None, fx=0.25, fy=0.25)
+    img = cv2.resize(img, None, fx=0.2, fy=0.2)
     
+    start_time = time.time()
     # rdaon transform
     prj_t = radon(img)
+    
     center = prj_t.shape[0] // 2
-    offset, ang_ps1 = np.unravel_index(prj_t.argmax(), prj_t.shape) # ang_ps1: radon image domain
-    log_ang.append(ang_ps1)
+    offset, ang_ps1 = np.unravel_index(prj_t.argmax(), prj_t.shape) # ang_ps1: radon image domain    
     
     # line generation for principle angle 1
-    lines_ps1 = generateRadonLines(prj_t, ang_ps1, 0.5, 20, center, (img.shape[1], img.shape[0]))
-    
+    lines_ps1 = generateRadonLines(prj_t, ang_ps1, 0.2, 10, center, (img.shape[1], img.shape[0]))    
     # line generation for principle angle 2
     ang_ps2 = 0
     if ang_ps1 < 90:
@@ -41,7 +42,7 @@ for i in tqdm(range(f0,f1)):
     elif ang_ps1 == 90:
         ang_ps2 = 0
         
-    lines_ps2 = generateRadonLines(prj_t, ang_ps2, 0.5, 20, center, (img.shape[1], img.shape[0]))
+    lines_ps2 = generateRadonLines(prj_t, ang_ps2, 0.2, 10, center, (img.shape[1], img.shape[0]))
     
     # cross point
     pts = []
@@ -49,7 +50,8 @@ for i in tqdm(range(f0,f1)):
         for l2 in lines_ps2:
             x, y = findCrossPoint((l1.get_a(), l1.get_b()), (l2.get_a(), l2.get_b()))
             pts.append((x,y))
-            
+    print('execution time: {} ms'.format((time.time()-start_time)*1000))
+       
     # draw
     img_debug = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
     
@@ -63,8 +65,11 @@ for i in tqdm(range(f0,f1)):
     for pt in pts:
         img_debug = cv2.circle(img_debug, (np.int(pt[0]), np.int(pt[1])), 1, (255,255,0), 1)
     
-    save_file = os.path.join(output_dir, '{:08d}.png'.format(i))    
-    cv2.imwrite(save_file, img_debug)
+    save_file = os.path.join(output_dir, '{:08d}.png'.format(i))
+    
+    plt.imshow(img_debug)
+    plt.show()
+    #cv2.imwrite(save_file, img_debug)
         
 
 

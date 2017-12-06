@@ -9,3 +9,5 @@ augmentation/\.ipynb_checkpoints/
 dataset/\.ipynb_checkpoints/
 
 code/weights/
+dataset/hyu_171025/rectified/set1/output/labeled/class_1/00000000.jpg
+dataset/
