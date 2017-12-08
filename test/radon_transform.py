@@ -48,25 +48,25 @@ def createTemplate(src, dist, margin):
     return img_template
 
 
-def drawRectangle(src, pts):
+def drawRectangle(src, pts, line_width, scale = 1.0):
     dst = src
     
     dst = cv2.line(dst, 
-                  (np.int(pts[0][0]), np.int(pts[0][1])),
-                  (np.int(pts[1][0]), np.int(pts[1][1])),
-                  (255,0,0), 1)
+                  (np.int(pts[0][0]*scale), np.int(pts[0][1]*scale)),
+                  (np.int(pts[1][0]*scale), np.int(pts[1][1]*scale)),
+                  (255,0,0), line_width)
     dst = cv2.line(dst, 
-                  (np.int(pts[1][0]), np.int(pts[1][1])),
-                  (np.int(pts[2][0]), np.int(pts[2][1])),
-                  (255,0,0), 1)
+                  (np.int(pts[1][0]*scale), np.int(pts[1][1]*scale)),
+                  (np.int(pts[2][0]*scale), np.int(pts[2][1]*scale)),
+                  (255,0,0), line_width)
     dst = cv2.line(dst, 
-                  (np.int(pts[2][0]), np.int(pts[2][1])),
-                  (np.int(pts[3][0]), np.int(pts[3][1])),
-                  (255,0,0), 1)
+                  (np.int(pts[2][0]*scale), np.int(pts[2][1]*scale)),
+                  (np.int(pts[3][0]*scale), np.int(pts[3][1]*scale)),
+                  (255,0,0), line_width)
     dst = cv2.line(dst, 
-                  (np.int(pts[3][0]), np.int(pts[3][1])),
-                  (np.int(pts[0][0]), np.int(pts[0][1])),
-                  (255,0,0), 1)
+                  (np.int(pts[3][0]*scale), np.int(pts[3][1]*scale)),
+                  (np.int(pts[0][0]*scale), np.int(pts[0][1]*scale)),
+                  (255,0,0), line_width)
     return dst
 
 def calculateMarginalSpace(pt1, pt2, margin):            
@@ -118,7 +118,28 @@ def cropImage(space, img, img_crop_size):
     img_crop = cv2.warpPerspective(img, Trans_mat, img_crop_size)
     
     return img_crop
+
+def space_estimation(ref, pt, depth):
+    ang = - (np.pi / 2)
+    dx = pt[0]-ref[0]
+    dy = pt[1]-ref[1]     
     
+    l = np.sqrt(dx*dx+dy*dy)
+    
+    vec = np.array((dx/l,dy/l)).reshape(2,1)        
+    rot = np.array((np.cos(ang), -np.sin(ang), np.sin(ang), np.cos(ang))).reshape(2,2)
+    vec_90 = np.dot(rot,vec)         
+    
+    x = pt[0]+vec_90[0][0]*depth
+    y = pt[1]+vec_90[1][0]*depth
+    pt3 = (x,y)
+    
+    x = ref[0]+vec_90[0][0]*depth
+    y = ref[1]+vec_90[1][0]*depth
+    pt4 = (x,y)         # ref - pt - pt3 - pt4 - ref (close rectangle
+    
+    return (ref, pt, pt3, pt4)
+
 class radon_line:
     def __init__(self):
         self.ang = 0.
@@ -175,7 +196,10 @@ class ps_line(radon_line):
         self.par_pairs = [] # parallel
         self.length_limit = {'perpendicular': length_limit[0], 'parallel': length_limit[1]}
         self.per_spaces = []
-        
+        self.valid_per_ps = []
+        self.valid_par_ps = []
+        self.per_depth = 5 / 0.0248 * 0.25
+        self.par_depth = 2.3 / 0.0248 * 0.25
         
     def set_cross_pt(self, pt):
         self.pts.append(pt)
@@ -205,12 +229,12 @@ class ps_line(radon_line):
                         pairs = (p1, p2)
                         self.par_pairs.append(pairs)
                        # print('parallel: {:2.2f} pixels'.format(dist))
-                       
-    def classify_pairs(self, img, margin, debug = False):
-        for pair in self.per_pairs:
+    
+    def create_parking_spaces(self, pairs, img, margin, depth, debug):        
+        ps = []
+        for pair in pairs:
             marginal_space, dist = calculateMarginalSpace(pair[0], pair[1], margin)
             img_crop = cropImage(marginal_space, img, (np.int(dist+margin*2), margin*2))
-            slot_temp = createTemplate(img_crop, dist, margin)
             slot_temp = createTemplate(img_crop, dist, margin)            
             
             results = []
@@ -218,7 +242,11 @@ class ps_line(radon_line):
                 result = cv2.matchTemplate(img_crop, template, cv2.TM_CCORR_NORMED)
                 results.append(result)
             
-            
+            if max(results) > 0.6:
+                if results.index(max(results)) == 0: # if 0, lower / if 1, upper                    
+                    ps.append(space_estimation(pair[1], pair[0], depth))
+                else:
+                    ps.append(space_estimation(pair[0], pair[1], depth))
             
             if debug == True:
                 plt.imshow(img_crop, cmap = 'gray')                
@@ -227,23 +255,8 @@ class ps_line(radon_line):
                     plt.imshow(template, cmap = 'gray')    
                     plt.show()              
                     print(result)
-            
-        for pair in self.par_pairs:
-            marginal_space, dist = calculateMarginalSpace(pair[0], pair[1], margin)
-            img_crop = cropImage(marginal_space, img, (np.int(dist+margin*2), margin*2))
-            slot_temp = createTemplate(img_crop, dist, margin)
-            slot_temp = createTemplate(img_crop, dist, margin)            
-            
-            results = []
-            for template in slot_temp:
-                result = cv2.matchTemplate(img_crop, template, cv2.TM_CCORR_NORMED)
-                results.append(result)
-            
-            if debug == True:
-                plt.imshow(img_crop, cmap = 'gray')                
-                plt.show()
-                for template, result in zip(slot_temp, results):    
-                    plt.imshow(template, cmap = 'gray')    
-                    plt.show()              
-                    print(result)
-        
+        return ps
+                    
+    def classify_pairs(self, img, margin, debug = False):                
+        self.valid_per_ps = self.create_parking_spaces(self.per_pairs, img, margin, self.per_depth, debug)
+        self.valid_par_ps = self.create_parking_spaces(self.par_pairs, img, margin, self.par_depth, debug)           
