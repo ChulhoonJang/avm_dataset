@@ -57,6 +57,7 @@ for i in range(f0,f1):
                               SpeedData[i][0] - SpeedData[i-1][0], SpeedData[i][1])
     
     dDist_pixel = dDist / XPixelMeter
+    
     # tracking
     new_ps = []
     for ps in measurement['pss']:
@@ -76,7 +77,28 @@ for i in range(f0,f1):
         init_states = ps[0:2,:]
         tracks.append(ps_tracker(ID, init_states, F, P, Q, R, H))
         ID = ID + 1
+    
+    # merge
+    eliminated_list = []
+    for i in range(len(tracks)-1):
+        for j in range(i+1, len(tracks)):    
+            if compare(tracks[i].get_states(), tracks[j].get_states(), 20) == True:
+                if tracks[i].P[0,0] > tracks[j].P[0,0]:
+                    eliminated_list.append(tracks[i].ID)
+                else:
+                    eliminated_list.append(tracks[j].ID)
         
+    # eliminate
+    for track in tracks:
+        for i in list(set(eliminated_list)):
+            if i == track.ID:
+                print('track {} is merged'.format(track.ID))
+                tracks.remove(track)
+                
+    for track in tracks:            
+        if track.condition == 0:
+            print('track {} is removed'.format(track.ID))
+            tracks.remove(track)
    
     # draw    
 #    img_debug = img
@@ -98,15 +120,12 @@ for i in range(f0,f1):
         flag, pts = track.get_track()
         if flag == True:
             ps = space_estimation(pts[0,:], pts[1,:], 5. / XPixelMeter)
-            img = drawRectangle(img_debug, ps, 3)
-            
-        if track.condition == 0:
-            tracks.remove(track)
-            print('track is removed')
+            img_debug = drawRectangle(img_debug, ps, 2)
             #print(track.P)
 #        img_debug = np.copy(img)
-#        img_debug = track.plot(img_debug,3)        
-    
+#        img_debug = track.plot(img_debug,3)
+            
+    img_debug = cv2.resize(img_debug,None, fx=2, fy=2)
     cv2.imshow('img_debug',img_debug)
     cv2.waitKey(33)
    
@@ -115,10 +134,14 @@ cv2.destroyAllWindows()
 #
 #i = 0
 #for track in tracks:
-#    i = i + 1
-#    print(i)
-#    print(track.P)
-#
+#    img_debug = np.copy(img)
+#    flag, pts = track.get_track()
+#    if flag == True:
+#        ps = space_estimation(pts[0,:], pts[1,:], 5. / XPixelMeter)
+#        img_debug = drawRectangle(img_debug, ps, 2)
+#    plt.imshow(img_debug)
+#    plt.show()    
+
 #img_debug = np.copy(img)
 #img_debug = tracks[6].plot(img_debug, 3)
 #plt.imshow(img_debug)

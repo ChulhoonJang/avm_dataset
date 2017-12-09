@@ -66,6 +66,7 @@ class ps_tracker:
         self.states_motion_compensated = []
         self.measurement = []
         self.condition = 1
+        self.occupied = False
         
     def run(self, dYaw, dDist, center, pts):
         self.status = 0

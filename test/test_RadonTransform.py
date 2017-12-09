@@ -12,7 +12,7 @@ import time
 import pickle
 
 #root = 'C:/Users/chulh/문서/Git/avm_dataset/test/'
-set_num = 2
+set_num = 3
 root = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171121/ss/set{}/labeled/class_1'.format(set_num)
 img_root = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171121/rectified/set{}'.format(set_num)
 output_dir = 'C:/Users/chulh/Documents/hyu_171121/set{}/'.format(set_num)
@@ -107,9 +107,9 @@ for i in tqdm(range(f0,f1)):
         if len(l.valid_per_ps) != 0:
             for ps in l.valid_per_ps:
                 valid_ps.append(np.array(ps)/img_rescale)
-        if len(l.valid_par_ps) != 0:
-            for ps in l.valid_par_ps:
-                valid_ps.append(np.array(ps)/img_rescale)
+#        if len(l.valid_par_ps) != 0:
+#            for ps in l.valid_par_ps:
+#                valid_ps.append(np.array(ps)/img_rescale)
         if len(l.pts) != 0:
             for pt in l.pts:
                 cross_pts.append(np.array(pt)/img_rescale)
