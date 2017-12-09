@@ -88,6 +88,8 @@ def get_arguments():
                         help="Directory of the trained model", required=True)
     parser.add_argument("--img-dir", type=str,
                         help="Directory of the image folder", required=True)
+    parser.add_argument("--output-dir", type=str,
+                        help="Directory of the image folder", required=True)
     parser.add_argument("--vgg16", type=str, default='./weights/vgg16.npy',
                         help="VGG16 params")
     parser.add_argument("--save-labeled", type=bool, default=False,
@@ -104,7 +106,9 @@ def main():
     MODEL_DIR = args.model_dir
     IMG_DIR = args.img_dir
     VGG16_PATH = args.vgg16
-    OUT_DIR = os.path.join(IMG_DIR, 'output')
+    OUT_DIR = args.output_dir
+    
+    print(args.save_labeled)
     
     # initialization
     print('[Available Computing Devices]')
@@ -135,6 +139,12 @@ def main():
         os.mkdir(output_folder_overlay)
     if os.path.isdir(output_folder_labeled) == False:
         os.mkdir(output_folder_labeled)
+        
+    for i in range(hypes['arch']['num_classes']):
+        folder_name = os.path.join(output_folder_labeled, 'class_{}'.format(i))
+        if os.path.isdir(os.path.join(output_folder_labeled, 'class_{}'.format(i))) == False:
+            os.mkdir(folder_name)
+    
     if os.path.isdir(output_folder_labeled_raw) == False :
         os.mkdir(output_folder_labeled_raw)
 
@@ -193,7 +203,8 @@ def main():
                     img_thresh = (img_prob > threshold)*(c+1)
                     img_sum = img_sum + img_thresh 
                     if args.save_labeled == True:
-                        image_name = os.path.join(output_folder_labeled, file.split('.')[0] + '_{}.png'.format(c))
+                        save_path = os.path.join(output_folder_labeled, 'class_{}'.format(c))
+                        image_name = os.path.join(save_path, file)
                         scp.misc.imsave(image_name, img_thresh)
                 
                 overlay_seg = utils.overlay_segmentation(img,img_sum,color_seg)
