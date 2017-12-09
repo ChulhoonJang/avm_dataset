@@ -12,7 +12,7 @@ import time
 import pickle
 
 #root = 'C:/Users/chulh/문서/Git/avm_dataset/test/'
-set_num = 3
+set_num = 2
 root = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171121/ss/set{}/labeled/class_1'.format(set_num)
 img_root = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171121/rectified/set{}'.format(set_num)
 output_dir = 'C:/Users/chulh/Documents/hyu_171121/set{}/'.format(set_num)
@@ -20,8 +20,8 @@ if os.path.isdir(output_dir) == False:
     os.mkdir(output_dir)
 
 frames = [602, 442, 539, 454, 557, 546, 581, 541]
-f0 = 49
-f1 = f0+1#frames[set_num-1]
+f0 = 0
+f1 = frames[set_num-1]
 
 
 ang_init = 90
@@ -93,7 +93,7 @@ for i in tqdm(range(f0,f1)):
             if x >= 0 and x < img_size[0] and y >= 0 and y < img_size[1]:
                 l1.set_cross_pt((x,y))
         l1.generate_pairs()        
-        l1.classify_pairs(img, margin, True)             
+        l1.classify_pairs(img, margin)             
         #img_debug = drawRectangle(img_debug, marginal_space)                        
     #print('execution time: {} ms'.format((time.time()-start_time)*1000))
        
@@ -107,9 +107,9 @@ for i in tqdm(range(f0,f1)):
         if len(l.valid_per_ps) != 0:
             for ps in l.valid_per_ps:
                 valid_ps.append(np.array(ps)/img_rescale)
-#        if len(l.valid_par_ps) != 0:
-#            for ps in l.valid_par_ps:
-#                valid_ps.append(np.array(ps)/img_rescale)
+        if len(l.valid_par_ps) != 0:
+            for ps in l.valid_par_ps:
+                valid_ps.append(np.array(ps)/img_rescale)
         if len(l.pts) != 0:
             for pt in l.pts:
                 cross_pts.append(np.array(pt)/img_rescale)
@@ -126,13 +126,13 @@ for i in tqdm(range(f0,f1)):
         
     measurements.append({'pss': valid_ps, 'pts': cross_pts})
     
-    plt.imshow(img_debug)    
-    plt.show()
+#    plt.imshow(img_debug)    
+#    plt.show()
     #print(ang_center)
-#    save_file = os.path.join(output_dir, '{:08d}.png'.format(i))
-#    cv2.imwrite(save_file, img_debug)
+    save_file = os.path.join(output_dir, '{:08d}.png'.format(i))
+    cv2.imwrite(save_file, img_debug)
 
-#pickle.dump(measurements, open(os.path.join(output_dir,'measurement.p'), 'wb'))
+pickle.dump(measurements, open(os.path.join(output_dir,'measurement.p'), 'wb'))
 
 
 

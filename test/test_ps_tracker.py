@@ -14,7 +14,7 @@ import cv2
 import numpy as np
 from ps_tracker import compare, ps_tracker, getMovement
 
-set_num = 3
+set_num = 2
 img_path = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171121/rectified/set{}'.format(set_num)
 data_path = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171121/motion/set{}'.format(set_num)
 meas_path = 'C:/Users/chulh/Documents/hyu_171121/set{}'.format(set_num)
@@ -47,7 +47,8 @@ H = 1. * np.eye((4))
 Q = 0.5e-4 * np.eye((4))  # process noise covariance
 R = 1e-3 * np.eye((4))  # observation noise covariance
 P = 2e-1 * np.eye((4))     # posteriori error covariance
-    
+
+ID = 0    
 for i in range(f0,f1):
     
     img = imread(os.path.join(img_path, '{:08d}.jpg'.format(i)))
@@ -73,7 +74,8 @@ for i in range(f0,f1):
     # new track initilization
     for ps in new_ps:
         init_states = ps[0:2,:]
-        tracks.append(ps_tracker(init_states, F, P, Q, R, H))
+        tracks.append(ps_tracker(ID, init_states, F, P, Q, R, H))
+        ID = ID + 1
         
    
     # draw    

@@ -51,7 +51,8 @@ def findNearPoint(ref, pts):
     return np.argmin(dist), min(dist)
 
 class ps_tracker:
-    def __init__(self, states, F, P, Q, R, H):
+    def __init__(self, ID, states, F, P, Q, R, H):
+        self.ID = ID
         self.states = np.array(states).reshape([4,1])      
         self.F = F
         self.P = P

@@ -47,7 +47,13 @@ def createTemplate(src, dist, margin):
     
     return img_template
 
-
+def createDT(src):    
+    src_inv = np.uint8(np.zeros((src.shape[0], src.shape[1])))    
+    src_inv[src == 0] = 255
+    
+    return cv2.distanceTransform(src_inv, cv2.DIST_L2, maskSize=3)   
+    
+    
 def drawRectangle(src, pts, line_width, scale = 1.0):
     dst = src
     
@@ -235,26 +241,36 @@ class ps_line(radon_line):
         for pair in pairs:
             marginal_space, dist = calculateMarginalSpace(pair[0], pair[1], margin)
             img_crop = cropImage(marginal_space, img, (np.int(dist+margin*2), margin*2))
-            slot_temp = createTemplate(img_crop, dist, margin)            
+            #img_crop = np.uint8(np.ones((img_crop.shape[0], img_crop.shape[1]))*255) 
+            img_crop_dt = createDT(img_crop)
+            slot_temp = createTemplate(img_crop, dist, margin)
             
             results = []
             for template in slot_temp:
-                result = cv2.matchTemplate(img_crop, template, cv2.TM_CCORR_NORMED)
-                results.append(result)
+                dt = createDT(template)
+                cost = sum(sum(np.sqrt(np.square(dt - img_crop_dt))))
+                results.append(cost)
             
-            if max(results) > 0.6:
-                if results.index(max(results)) == 0: # if 0, lower / if 1, upper                    
+            if min(results) < 600:
+                if results.index(min(results)) == 0: # if 0, lower / if 1, upper                    
                     ps.append(space_estimation(pair[1], pair[0], depth))
                 else:
                     ps.append(space_estimation(pair[0], pair[1], depth))
             
             if debug == True:
-                plt.imshow(img_crop, cmap = 'gray')                
-                plt.show()
-                for template, result in zip(slot_temp, results):    
-                    plt.imshow(template, cmap = 'gray')    
-                    plt.show()              
-                    print(result)
+                for template, result in zip(slot_temp, results):
+                    if result < 600:
+                        plt.imshow(img_crop, cmap = 'gray')                
+                        plt.show()
+                        
+                        plt.imshow(img_crop_dt, cmap = 'gray')                
+                        plt.show()
+                    
+                        dt = createDT(template)
+                        plt.imshow(dt, cmap = 'gray')
+                        plt.show()
+                        
+                        print(result)
         return ps
                     
     def classify_pairs(self, img, margin, debug = False):                
