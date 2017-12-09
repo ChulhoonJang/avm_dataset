@@ -12,15 +12,17 @@ import time
 import pickle
 
 #root = 'C:/Users/chulh/문서/Git/avm_dataset/test/'
-set_num = 1
+set_num = 3
 root = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171121/ss/set{}/labeled/class_1'.format(set_num)
 img_root = 'C:/Users/chulh/문서/Git/avm_dataset/dataset/hyu_171121/rectified/set{}'.format(set_num)
 output_dir = 'C:/Users/chulh/Documents/hyu_171121/set{}/'.format(set_num)
 if os.path.isdir(output_dir) == False:
     os.mkdir(output_dir)
 
-f0 = 9
-f1 = 10
+frames = [602, 442, 539, 454, 557, 546, 581, 541]
+f0 = 49
+f1 = f0+1#frames[set_num-1]
+
 
 ang_init = 90
 ang_margin = 10
@@ -99,28 +101,30 @@ for i in tqdm(range(f0,f1)):
     ang_center = ang_ps1
     #print(ang_center)
 
-    valid_per_ps = []
-    valid_par_ps = []
+    valid_ps = []    
     cross_pts = []
     for l in lines_ps1:
         if len(l.valid_per_ps) != 0:
-            valid_per_ps.append(l.valid_per_ps)
-        if len(l.valid_par_ps) != 0:
-            valid_par_ps.append(l.valid_par_ps)
+            for ps in l.valid_per_ps:
+                valid_ps.append(np.array(ps)/img_rescale)
+#        if len(l.valid_par_ps) != 0:
+#            for ps in l.valid_par_ps:
+#                valid_ps.append(np.array(ps)/img_rescale)
         if len(l.pts) != 0:
-            cross_pts.append(l.pts)
+            for pt in l.pts:
+                cross_pts.append(np.array(pt)/img_rescale)
 
     # draw
     img_debug = img_src
     for l in lines_ps1:
-#        for ps in l.valid_per_ps:
-#            img_debug = drawRectangle(img_debug, ps, 3, 1./img_rescale )
+        for ps in l.valid_per_ps:
+            img_debug = drawRectangle(img_debug, ps, 3, 1./img_rescale )
         for ps in l.valid_par_ps:
             img_debug = drawRectangle(img_debug, ps, 3, 1./img_rescale )
         for pt in l.pts:
             img_debug = cv2.circle(img_debug, (np.int(pt[0]/img_rescale), np.int(pt[1]/img_rescale)),3, (0,255,255), -1)
         
-    measurements = {'per_ps': valid_per_ps, 'par_ps': valid_par_ps, 'cross_pts': cross_pts}
+    measurements.append({'pss': valid_ps, 'pts': cross_pts})
     
     plt.imshow(img_debug)    
     plt.show()
@@ -128,7 +132,7 @@ for i in tqdm(range(f0,f1)):
 #    save_file = os.path.join(output_dir, '{:08d}.png'.format(i))
 #    cv2.imwrite(save_file, img_debug)
 
-pickle.dump(measurements, open(os.path.join(output_dir,'measurement.p'), 'wb'))
+#pickle.dump(measurements, open(os.path.join(output_dir,'measurement.p'), 'wb'))
 
 
 
