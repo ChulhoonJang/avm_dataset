@@ -173,7 +173,7 @@ def main():
             for file in os.listdir(IMG_DIR):
                 if len(file.split('.')) != 2:
                     continue
-                if file.split('.')[1] != 'jpg':
+                if file.split('.')[1] != 'png':
                     print(file + ' is skipped')
                     continue
                 image_file = os.path.join(IMG_DIR, file)

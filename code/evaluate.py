@@ -251,6 +251,8 @@ def get_arguments():
     
     parser.add_argument("--model-dir", type=str,
                         help="Directory of the trained model", required=True)
+    parser.add_argument("--model-ckpt", type=str,
+                        help="Path of checkpoint for evaluation", required=True)
     parser.add_argument("--eval-file", type=str,
                         help="file for evaluation", required=True)
     parser.add_argument("--eval-dir", type=str,
@@ -266,6 +268,7 @@ def main():
     args = get_arguments()
     
     MODEL_DIR = args.model_dir
+    MODEL_CKPT = args.model_ckpt
     EVAL_DIR = args.eval_dir
     EVAL_FILE = args.eval_file
     VGG16_PATH = args.vgg16
@@ -284,7 +287,7 @@ def main():
     #logger.addHandler(streamHandler)
     logger.setLevel(logging.DEBUG)
     
-    logger.info('model: {}'.format(MODEL_DIR))
+    logger.info('model: {}'.format(MODEL_CKPT))
     logger.info('eval_file: {}'.format(EVAL_FILE))
     
     # initialization
@@ -333,7 +336,7 @@ def main():
             saver = tf.train.Saver()
 
             # Load weights from logdir
-            load_weights(MODEL_DIR, sess, saver)
+            saver.restore(sess, MODEL_CKPT)
             print('[log] wieghts are restored')
             print("Start inference")
 
