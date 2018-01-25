@@ -1,1 +1,4 @@
 python evaluate.py --model-dir=./models/model-171115 --eval-file=/media/srg/Work/git/avm_dataset/dataset/AVM6414_augmented/test.txt --eval-dir=/media/srg/Work/git/avm_dataset/dataset/AVM6414_augmented
+python runnable.py --model-dir=./models/model_171115 --img-dir=E:/ParkingSlotDetection/db/training_db/db6414/training/images --output-dir=E:/ParkingSlotDetection/db/training_db/db6414/training/output
+
+python runnable.py --model-dir=./models/model_171115 --img-dir=E:/ParkingSlotDetection/db/training_db/db6414/test/images --output-dir=E:/ParkingSlotDetection/db/training_db/db6414/test/output
