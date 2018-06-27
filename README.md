@@ -36,6 +36,20 @@ The SS dataset contains various samples from outdoor and indoor parking lots. In
 
 dataset name: *avm_ps_db* ([download](https://drive.google.com/drive/folders/1fU5Q4oJ53ElWv5T3PL89RDCQh1AO-Ade?usp=sharing))
 
+Statistics of parking space dataset
+*Condition / Slot Type / Parking Space Type / Num of Parking spaces*
+Outdoor   / Closed    / Perpendicular      / 8277
+Outdoor   / Opened    / Perpendicular      / 2627
+Outdoor   / Closed    / Parallel           / 1883
+Outdoor   / Opened    / Parallel           / 452
+Outdoor   / No marker / Parallel           / 68
+Total number of parking spaces in outdoor condition: 13307
+
+Indoor    / Closed    / Perpendicular      / 21734
+Indoor    / No marker / Perpendicular      / 848
+Total number of parking spaces in indoor condition: 22582
+*Total number of parking spaces: 35889*
+
 
 
 
