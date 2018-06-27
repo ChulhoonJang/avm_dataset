@@ -8,16 +8,15 @@ We present the AVM System Datasets for auto parking. The datasets consists of tw
 
 ## Description of *SS*(Semantic Segmentation) dataset
 
-This dataset contains 6414 camera images at a resolution of 320 x 160 pixels. There are four categories: free space, marker, vehicle, and other objects. For each image, a corresponding ground truth image is composed of four color annotations to distinguish different classes.
+This dataset contains 6763 camera images at a resolution of 320 x 160 pixels. There are four categories: free space, marker, vehicle, and other objects. For each image, a corresponding ground truth image is composed of four color annotations to distinguish different classes.
 
-dataset name: *AVM6414* ([download](https://drive.google.com/drive/folders/0BylKEIPbxlTtbUtHbjdhV2JLSGM?usp=sharing))
+dataset name: *avm_seg_db* ([download](https://drive.google.com/drive/folders/172TclK1mwIvHDLOQrqb0kp6GbIlrsPzg?usp=sharing))
 
 | Category  | Frames   |
 | --------- | -------- |
-| Training  | 3849     |
-| Valid     | 962      |
-| Test      | 1603     |
-| **Total** | **6414** |
+| Training  | 4057     |
+| Test      | 2706     |
+| **Total** | **6763** |
 
 * class 0: Free space *- RGB color [0, 0, 255]*
 * class 1: Marker *- RGB color [255,255,255]*
@@ -35,7 +34,8 @@ The SS dataset contains various samples from outdoor and indoor parking lots. In
 
 ## Description of *PS*(Parking Space) dataset
 
-coming soon
+dataset name: *avm_ps_db* ([download](https://drive.google.com/drive/folders/1fU5Q4oJ53ElWv5T3PL89RDCQh1AO-Ade?usp=sharing))
+
 
 
 
