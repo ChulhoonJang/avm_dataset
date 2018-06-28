@@ -12,6 +12,31 @@ This dataset contains 6763 camera images at a resolution of 320 x 160 pixels. Th
 
 dataset name: *avm_seg_db* ([download](https://drive.google.com/drive/folders/172TclK1mwIvHDLOQrqb0kp6GbIlrsPzg?usp=sharing))
 
+**Total number of semantic segmentation images of AVM: 6763**
+
+**outdoor** images: 3614
+
+| Condition | Slot Type | Parking Space Type | Number of Parking spaces |
+| --------- | --------- | -------------------| ------------------------ |
+| Outdoor   | Closed    | Perpendicular      | 2005                     |
+| Outdoor   | Opened    | Perpendicular      | 674  |
+| Outdoor   | No marker | Perpendicular      | 19   |
+| Outdoor   | Closed    | Parallel           | 686  |
+| Outdoor   | Opened    | Parallel           | 0    |
+| Outdoor   | No marker | Parallel           | 230  |
+
+**indoor** images: 3149
+
+| Condition | Slot Type | Parking Space Type | Number of Parking spaces |
+| --------- | --------- | -------------------| ------------------------ |
+| Indoor    | Closed    | Perpendicular      | 2642 |
+| Indoor    | Opened    | Perpendicular      | 0    |
+| Indoor    | No marker | Perpendicular      | 340  |
+| Indoor    | Closed    | Parallel           | 67   |
+| Indoor    | Opened    | Parallel           | 0    |
+| Indoor    | No marker | Parallel           | 100  |
+
+
 | Category  | Frames   |
 | --------- | -------- |
 | Training  | 4057     |
