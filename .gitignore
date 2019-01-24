@@ -1,17 +1,2 @@
-dataset/AVM6414_augmented
-dataset/AVM6414
-code/models/
-<<<<<<< HEAD
-code/weights/
-dataset/hyu_171025/calib.zip
-dataset/
-=======
-
 *.pyc
-
-augmentation/\.ipynb_checkpoints/
-
-dataset/\.ipynb_checkpoints/
-
-code/weights/
->>>>>>> e6a099d0306cb65f978d97bc9e87b90a8927620a
+.ipynb_checkpoints/

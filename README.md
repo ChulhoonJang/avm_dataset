@@ -6,6 +6,10 @@ We present the AVM System Datasets for auto parking. The datasets consists of tw
 
 
 
+The implementation code of semantic segmentation for AVM is available in this [link](https://github.com/ChulhoonJang/avm_ss)
+
+
+
 ## Description of *SS*(Semantic Segmentation) dataset
 
 This dataset contains 6763 camera images at a resolution of 320 x 160 pixels. There are four categories: free space, marker, vehicle, and other objects. For each image, a corresponding ground truth image is composed of four color annotations to distinguish different classes.
@@ -49,11 +53,11 @@ dataset name: *avm_seg_db* ([download](https://drive.google.com/drive/folders/17
 * class 3: Other objects (curb, pillar, wall, and so on) *- RGB color [0,255,0]*
 * Negligible area: Ego vehicle *- RGB color [0,0,0]*
 
-![image](ss_dataset_example/image.jpg) ![gt](ss_dataset_example/gt.png)
+![image](images/image.jpg) ![gt](images/gt.png)
 
 The SS dataset contains various samples from outdoor and indoor parking lots. In particular, the indoor samples are quite difficult to recognize because reflected lights look similar with slot markers and they might degrade slot marker detection.
 
-![samples](ss_dataset_example/avm_image_samples.png)
+![samples](images/avm_image_samples.png)
 
 ​                                                       (a) outdoor-day, (b) outdoor-rainy, (c) indoor
 
