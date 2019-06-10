@@ -14,7 +14,7 @@ The implementation code of semantic segmentation for AVM is available in this [l
 
 This dataset contains 6763 camera images at a resolution of 320 x 160 pixels. There are four categories: free space, marker, vehicle, and other objects. For each image, a corresponding ground truth image is composed of four color annotations to distinguish different classes.
 
-dataset name: *avm_seg_db* ([download](https://drive.google.com/drive/folders/172TclK1mwIvHDLOQrqb0kp6GbIlrsPzg?usp=sharing))
+dataset name: *avm_seg_db* ([download](http://log.acelab.org:5000/sharing/XZzWpdwnA))
 
 **Total number of semantic segmentation images of AVM: 6763**
 
@@ -63,7 +63,7 @@ The SS dataset contains various samples from outdoor and indoor parking lots. In
 
 ## Description of *PS*(Parking Space) dataset
 
-dataset name: *avm_ps_db* ([download](https://drive.google.com/drive/folders/1fU5Q4oJ53ElWv5T3PL89RDCQh1AO-Ade?usp=sharing))
+dataset name: *avm_ps_db* ([download](http://log.acelab.org:5000/sharing/OGsE9hjgv))
 
 **Total number of parking spaces / Frames: 35889 / 21581**
 
